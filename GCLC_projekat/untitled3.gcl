@@ -1,0 +1,147 @@
+dim 120 100
+
+color 0 128 0
+point dl 0 0 
+point gd 120 10
+fillrectangle dl gd
+
+color 173 216 230
+point dl1 0 10
+point gd1 120 100
+fillrectangle dl1 gd1
+
+color 0 0 0
+point Lovac 10 10
+cmark_lt Lovac
+
+number g 10
+number h_tree 80
+number d_tree 80
+
+point T 0 0 4 0
+getx t T
+
+color 150 75 0
+expression m_x {10+h_tree}
+expression m_y {10+d_tree-0.5*g*t*t}
+expression r_g {m_y+2}
+point centar_glava m_x m_y
+point r_glava m_x r_g
+circle Majmun centar_glava r_glava
+drawcircle Majmun
+fillcircle Majmun
+
+color 0 0 0
+expression text_x {m_x+5}
+expression text_y {m_y-3}
+point text text_x text_y
+printat text {Majmun}
+
+color 150 75 0
+expression luxc {m_x-2}
+expression luyc {m_y+0.5}
+point luc luxc luyc
+expression luxr {m_x-2}
+expression luyr {m_y+1.2}
+point lur luxr luyr
+circle luvo luc lur
+drawcircle luvo
+fillcircle luvo
+
+expression duxc {m_x+2}
+expression duyc {m_y+0.5}
+point duc duxc duyc
+expression duxr {m_x+2}
+expression duyr {m_y+1.2}
+point dur duxr duyr
+circle duvo duc dur
+drawcircle duvo
+fillcircle duvo
+
+color 255 255 255
+expression loxc {m_x-0.8}
+expression loyc {m_y+1}
+point loc loxc loyc
+expression loxr {m_x-0.8}
+expression loyr {m_y+1.3}
+point lor loxr loyr
+circle loko loc lor
+drawcircle loko
+fillcircle loko
+
+expression doxc {m_x+0.8}
+expression doyc {m_y+1}
+point doc doxc doyc
+expression doxr {m_x+0.8}
+expression doyr {m_y+1.3}
+point dor doxr doyr
+circle doko doc dor
+drawcircle doko
+fillcircle doko
+
+expression ucx {m_x}
+expression ucy {m_y-1}
+point uc  ucx ucy
+fillellipse uc 0.8 0.3
+
+arrowstyle 25 2 0.2
+
+expression alpha {atan(h_tree/d_tree)}
+expression cosa {cos(alpha)}
+expression sina {sin(alpha)}
+number v0 30
+number num_hit 10
+array niz { 10 2 }
+
+while {num_hit>0}
+{
+expression hitac_x {10+v0*cosa*t}
+expression hitac_y {10+v0*sina*t-g*t*t/2}
+expression hitac_x2 {hitac_x+1}
+point h1 hitac_x hitac_y
+point h2 hitac_x2 hitac_y
+
+expression niz[num_hit][1] {hitac_x}
+expression niz[num_hit][2] {hitac_y} 
+
+if_then_else {hitac_x>91.5}
+{
+color 173 216 230
+drawarrow h1 h2 1
+}
+{color 255 0 0
+drawarrow h1 h2 1
+}
+expression v0 {v0+num_hit*0.5}
+expression num_hit {num_hit-1}
+}
+
+point p10 niz[10][1] niz[10][2]
+point p9 niz[9][1] niz[9][2]
+point p8 niz[8][1] niz[8][2]
+point p7 niz[7][1] niz[7][2]
+point p6 niz[6][1] niz[6][2]
+point p5 niz[5][1] niz[5][2]
+point p4 niz[4][1] niz[4][2]
+point p3 niz[3][1] niz[3][2]
+point p2 niz[2][1] niz[2][2]
+point p1 niz[1][1] niz[1][2]
+
+trace p1 255 0 0
+trace p2 255 0 0
+trace p3 255 0 0
+trace p4 255 0 0
+trace p5 255 0 0
+trace p6 255 0 0
+trace p7 255 0 0
+trace p8 255 0 0
+trace p9 255 0 0
+trace p10 255 0 0
+
+animation_frames 1200 60
+
+
+
+
+
+
