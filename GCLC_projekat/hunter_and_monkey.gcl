@@ -10,7 +10,20 @@ point dl1 0 10
 point gd1 120 100
 fillrectangle dl1 gd1
 
+
+
 color 0 0 0
+point A 0 0
+point B 120 0
+point C 0 100
+point D 120 100
+linethickness 0.4
+drawsegment A B
+drawsegment B D
+drawsegment C D
+drawsegment C A
+linethickness 0.16
+
 point Lovac 10 10
 cmark_lt Lovac
 
@@ -101,7 +114,7 @@ expression hitac_x2 {hitac_x+1}
 point h1 hitac_x hitac_y
 point h2 hitac_x2 hitac_y
 
-expression niz[num_hit][1] {hitac_x}
+expression niz[num_hit][1] {ite(hitac_x>120,120,hitac_x)}
 expression niz[num_hit][2] {hitac_y} 
 
 if_then_else {hitac_x>91.5}
@@ -127,18 +140,20 @@ point p3 niz[3][1] niz[3][2]
 point p2 niz[2][1] niz[2][2]
 point p1 niz[1][1] niz[1][2]
 
-trace p1 255 0 0
-trace p2 255 0 0
-trace p3 255 0 0
-trace p4 255 0 0
-trace p5 255 0 0
-trace p6 255 0 0
-trace p7 255 0 0
-trace p8 255 0 0
-trace p9 255 0 0
-trace p10 255 0 0
+trace p1 0 0 0
+trace p2 0 0 0
+trace p3 0 0 0
+trace p4 0 0 0
+trace p5 0 0 0
+trace p6 0 0 0
+trace p7 0 0 0
+trace p8 0 0 0
+trace p9 0 0 0
+trace p10 0 0 0
 
-animation_frames 1200 60
+animation_frames 600 60
+
+
 
 
 
