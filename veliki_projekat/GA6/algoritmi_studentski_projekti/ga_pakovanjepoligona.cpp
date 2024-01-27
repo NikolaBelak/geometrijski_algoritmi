@@ -21,19 +21,7 @@ bool operator<(const QPointF& tacka1, const QPointF& tacka2) {
     return tacka1.x() < tacka2.x();
 }
 
-qreal visinaPoligona(const QPolygonF& poligon){
-    qreal minY=std::numeric_limits<qreal>::max();
-    qreal maxY=std::numeric_limits<qreal>::min();
-
-    for(const QPointF& tacka:poligon){
-        minY=qMin(minY,tacka.y());
-        maxY=qMax(maxY,tacka.y());
-    }
-
-    return maxY-minY;
-}
-
-QLineF kicmaPoligona(const QPolygonF& poligon){
+QLineF PakovanjePoligona::kicmaPoligona(const QPolygonF& poligon){
     qreal minY=std::numeric_limits<qreal>::max();
     qreal maxY=std::numeric_limits<qreal>::min();
     QPointF minTacka;
@@ -54,7 +42,7 @@ QLineF kicmaPoligona(const QPolygonF& poligon){
     return kicma;
 }
 
-QLineF kicmaParalelograma(const QPolygonF& paralelogram){
+QLineF PakovanjePoligona::kicmaParalelograma(const QPolygonF& paralelogram){
     QPointF dl=paralelogram.at(0);
     QPointF gl=paralelogram.at(3);
 
@@ -62,7 +50,7 @@ QLineF kicmaParalelograma(const QPolygonF& paralelogram){
     return kicma;
 }
 
-bool porediPoKicmi(const QPolygonF& a, const QPolygonF& b){
+bool PakovanjePoligona::porediPoKicmi(const QPolygonF& a, const QPolygonF& b){
     QLineF kicma1=kicmaPoligona(a);
     QLineF kicma2=kicmaPoligona(b);
 
@@ -72,7 +60,7 @@ bool porediPoKicmi(const QPolygonF& a, const QPolygonF& b){
     return ugao1<ugao2;
 }
 
-bool porediPoKicmiParalelograme(const QPolygonF& a, const QPolygonF& b){
+bool PakovanjePoligona::porediPoKicmiParalelograme(const QPolygonF& a, const QPolygonF& b){
     QLineF kicma1=kicmaParalelograma(a);
     QLineF kicma2=kicmaParalelograma(b);
 
@@ -82,7 +70,7 @@ bool porediPoKicmiParalelograme(const QPolygonF& a, const QPolygonF& b){
     return ugao1<ugao2;
 }
 
-QVector<QPolygonF> sortirajParalelogramePoKicmi(const QVector<QPolygonF> paralelogrami)
+QVector<QPolygonF> PakovanjePoligona::sortirajParalelogramePoKicmi(const QVector<QPolygonF> paralelogrami)
 {
     QVector<QPolygonF> sortiraniParalelogrami=paralelogrami;
 
@@ -91,71 +79,8 @@ QVector<QPolygonF> sortirajParalelogramePoKicmi(const QVector<QPolygonF> paralel
     return sortiraniParalelogrami;
 }
 
-bool porediPoligone(const QPolygonF& poli1, const QPolygonF& poli2) {
-    if (poli1.size() != poli2.size()) {
-        return false;
-    }
 
-    for (int i = 0; i < poli1.size(); ++i) {
-        if (poli1[i] != poli2[i]) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-QLineF tangentaNaKicmu(const QPolygonF& poligon,const QLineF& kicma,bool isLeva){
-    int n=poligon.size();
-    QPointF p1,p2;
-
-    QPointF pravacKicme=kicma.p2()-kicma.p1();
-    QPointF normalaKicme=QPointF(-pravacKicme.y(),pravacKicme.x());
-
-    qreal maxRast1=-1.0;
-    for (int i = 0; i < n; ++i) {
-        QPointF vektorTacke = poligon[i] - kicma.p1();
-        qreal rastojanje = QPointF::dotProduct(vektorTacke, normalaKicme);
-        if (rastojanje > maxRast1) {
-            maxRast1 = rastojanje;
-            p1 = poligon[i];
-        }
-    }
-
-    qreal maxRast2 = -1.0;
-    for (int i = 0; i < n; ++i) {
-        QPointF vektorTacke = poligon[i] - kicma.p2();
-        qreal rastojanje = QPointF::dotProduct(vektorTacke, normalaKicme);
-        if (rastojanje > maxRast2) {
-            maxRast2 = rastojanje;
-            p2 = poligon[i];
-        }
-    }
-
-    QLineF tangenta(p1,p2);
-    tangenta.setAngle(kicma.angle()+(isLeva?90.0:-90.0));
-
-    return tangenta;
-}
-
-QPointF pronadjiTackuNaTangenti(const QPolygonF& poligon, const QLineF& tangenta) {
-    int n = poligon.size();
-    QPointF presek;
-
-    for (int i = 0; i < n; ++i) {
-        QLineF ivica(poligon[i], poligon[(i + 1) % n]);
-        QPointF tackaPreseka;
-
-        if (ivica.intersects(tangenta, &tackaPreseka) == QLineF::BoundedIntersection) {
-            presek = tackaPreseka;
-            break;
-        }
-    }
-
-    return presek;
-}
-
-qreal rastojanje(const QPointF &p, const QLineF &ivica)
+qreal PakovanjePoligona::rastojanje(const QPointF &p, const QLineF &ivica)
 {
     QPointF p1 = ivica.p1();
     QPointF p2 = ivica.p2();
@@ -172,7 +97,7 @@ qreal rastojanje(const QPointF &p, const QLineF &ivica)
     return (x*y2 - y*x2) / norm;
 }
 
-std::tuple<qreal,qreal,qreal> pronadjiJednacinuPrave(const QPointF &tacka1,const QPointF &tacka2){
+std::tuple<qreal,qreal,qreal> PakovanjePoligona::pronadjiJednacinuPrave(const QPointF &tacka1,const QPointF &tacka2){
     qreal a = tacka1.y() - tacka2.y();
     qreal b = tacka2.x() - tacka1.x();
     qreal c = tacka1.x() * tacka2.y() - tacka2.x() * tacka1.y();
@@ -180,21 +105,14 @@ std::tuple<qreal,qreal,qreal> pronadjiJednacinuPrave(const QPointF &tacka1,const
     return std::make_tuple(a,b,c);
 }
 
-qreal distanca(qreal a,qreal b,qreal c,QPointF& tacka){
-    qreal numer=fabs(a*tacka.x()+b*tacka.y()+c);
-    qreal denom=sqrt(a*a+b*b);
-
-    return numer/denom;
-}
-
-QLineF pravaIzKoef(qreal a,qreal b,qreal c){
+QLineF PakovanjePoligona::pravaIzKoef(qreal a,qreal b,qreal c){
     QPointF prva(0,-c/b);
     QPointF druga(1,(-c-a)/b);
 
     return QLineF(prva,druga);
 }
 
-std::pair<qreal,qreal> rastojanje2(const QPointF &p, const QLineF &ivica)
+std::pair<qreal,qreal> PakovanjePoligona::rastojanje2(const QPointF &p, const QLineF &ivica)
 {
     std::tuple<qreal,qreal,qreal> prava;
     prava=pronadjiJednacinuPrave(ivica.p1(),ivica.p2());
@@ -214,14 +132,14 @@ std::pair<qreal,qreal> rastojanje2(const QPointF &p, const QLineF &ivica)
     return std::make_pair(p.x()-presek.x(),p.y()-presek.y());
 }
 
-QLineF paralelnaXOsiKrozTacku(QPointF tacka){
+QLineF PakovanjePoligona::paralelnaXOsiKrozTacku(QPointF tacka){
     QPointF prva(tacka.x()-1,tacka.y());
     QPointF druga(tacka.x()+1,tacka.y());
 
     return QLineF(prva,druga);
 }
 
-QPolygonF napraviXParalelogram(const QPolygonF& poligon){
+QPolygonF PakovanjePoligona::napraviXParalelogram(const QPolygonF& poligon){
     QPointF pb, pt;
 
     QLineF kicma=kicmaPoligona(poligon);
@@ -284,32 +202,7 @@ QPolygonF napraviXParalelogram(const QPolygonF& poligon){
     return paralelogram;
 }
 
-qreal maxSirina(const QVector<QPolygonF>& pravougaonici){
-    qreal maxSirina=0;
-
-    for (const QPolygonF& poligon : pravougaonici) {
-        // Iteriranje kroz svaku tačku u poligonu
-        for (int i = 0; i < poligon.size(); ++i) {
-           // Pravljenje parova susednih tačaka u poligonu
-           const QPointF& tacka1 = poligon[i];
-           const QPointF& tacka2 = poligon[(i + 1) % poligon.size()];
-
-           // Računanje razlike x koordinata dve donje tačke
-           qreal sirinaPoligona = qAbs(tacka2.x() - tacka1.x());
-
-           // Ažuriranje najveće širine ako je trenutna veća
-           maxSirina = qMax(maxSirina, sirinaPoligona);
-        }
-    }
-
-    return maxSirina;
-}
-
-bool visinaSort(const QPolygonF &a, const QPolygonF &b) {
-    return a.boundingRect().height() > b.boundingRect().height();
-}
-
-QVector<QRectF> FFDHPakovanje(const QVector<QRectF>& pravougaonici, qreal stripWidth) {
+QVector<QRectF> PakovanjePoligona::FFDHPakovanje(const QVector<QRectF>& pravougaonici, qreal stripWidth) {
     QVector<QRectF> nizPravougaonika=pravougaonici;
     std::sort(nizPravougaonika.begin(), nizPravougaonika.end(), [](const QRectF& a, const QRectF& b) {
         return a.height() > b.height();
@@ -564,7 +457,7 @@ void PakovanjePoligona::crtajAlgoritam(QPainter *painter) const
     }
 }
 
-bool daLiSeLinijeSeku(const QLineF& linija1, const QLineF& linija2) {
+bool PakovanjePoligona::daLiSeLinijeSeku(const QLineF& linija1, const QLineF& linija2) {
     qreal x1 = linija1.p1().x(), y1 = linija1.p1().y();
     qreal x2 = linija1.p2().x(), y2 = linija1.p2().y();
     qreal x3 = linija2.p1().x(), y3 = linija2.p1().y();
@@ -582,7 +475,7 @@ bool daLiSeLinijeSeku(const QLineF& linija1, const QLineF& linija2) {
     return (t >= 0 && t <= 1 && u >= 0 && u <= 1);
 }
 
-bool daLiSePoligoniSeku(const QPolygonF& poligon1, const QPolygonF& poligon2) {
+bool PakovanjePoligona::daLiSePoligoniSeku(const QPolygonF& poligon1, const QPolygonF& poligon2) {
     int n1 = poligon1.size();
     int n2 = poligon2.size();
 
@@ -601,14 +494,14 @@ bool daLiSePoligoniSeku(const QPolygonF& poligon1, const QPolygonF& poligon2) {
     return false;
 }
 
-void translirajPoligon(QPolygonF& poligon, qreal dx, qreal dy) {
+void PakovanjePoligona::translirajPoligon(QPolygonF& poligon, qreal dx, qreal dy) {
     for (QPointF& tacka : poligon) {
         tacka.setX(tacka.x() + dx);
         tacka.setY(tacka.y() + dy);
     }
 }
 
-bool daLiSeNizPoligonaPreseca(QPolygonF& poligon1, const QVector<QPolygonF>& poligoni) {
+bool PakovanjePoligona::daLiSeNizPoligonaPreseca(QPolygonF& poligon1, const QVector<QPolygonF>& poligoni) {
 
     for(const QPolygonF& poli:poligoni){
         if(daLiSePoligoniSeku(poligon1,poli)){
@@ -618,7 +511,7 @@ bool daLiSeNizPoligonaPreseca(QPolygonF& poligon1, const QVector<QPolygonF>& pol
     return false;
 }
 
-std::pair<QRectF,QVector<QPolygonF>> packPolygons(QVector<QPolygonF>& poligoni,int g) {
+std::pair<QRectF,QVector<QPolygonF>> PakovanjePoligona::packPolygons(QVector<QPolygonF>& poligoni,int g) {
     QVector<QPolygonF> nizPoligona=poligoni;
     QRectF boundingRect = nizPoligona.first().boundingRect();
 

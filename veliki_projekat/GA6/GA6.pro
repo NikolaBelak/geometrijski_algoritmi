@@ -1,4 +1,4 @@
-QT       += core gui opengl charts
+QT       += core gui opengl charts testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 LIBS += -lglut -lGLU
@@ -51,6 +51,7 @@ HEADERS += \
     oblastcrtanja.h \
     oblastcrtanjaopengl.h \
     pomocnefunkcije.h \
+    testrunner.h \
     timemeasurementthread.h
 
 FORMS += \

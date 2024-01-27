@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "testrunner.h"
 
 #include <QApplication>
 #include <GL/glut.h>
@@ -7,6 +8,9 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    TestRunner testRunner;
+    QTest::qExec(&testRunner,argc,argv);
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
